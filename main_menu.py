@@ -36,12 +36,19 @@ class Friend_Connection_Menu (menu_template):
     3. See the list of persons\n \
     4. See the list of connections\n \
     5. View the graph\n \
-    6. Exit"
+    6. Find the total number of connections\n \
+    7. Find the most popular person\n \
+    8. Find the isolated people\n \
+    9. Find the average strength of friendship\n \
+   10. Debug: Print all info\n \
+   11. Exit"
         self.fc_inst = fc.Friend_Connection()
         
     def run_chosen_function_loop(self):
         choice = self._print_options_with_choice_prompt()
-        while not self._check_valid(5,choice):
+        max_choice = 11
+
+        while not self._check_valid(max_choice,choice):
             choice = self._choice_prompt()
         
         while True:
@@ -76,17 +83,23 @@ class Friend_Connection_Menu (menu_template):
                 self.fc_inst.print_all_connection()
 
             elif choice is 5:
+                # Code from https://networkx.org/documentation/stable/auto_examples/drawing/plot_weighted_graph.html
+                
                 G = nx.Graph()
                 print(self.fc_inst.return_friend_connections())
+
+                for person in self.fc_inst.return_friends():
+                    G.add_node(person)
 
                 for connection in self.fc_inst.return_friend_connections():
                     G.add_edge(connection[0], connection[1], weight=connection[2])
 
-                elarge = [(u, v) for (u, v, d) in G.edges(data=True) if d["weight"] > 0.5]
-                esmall = [(u, v) for (u, v, d) in G.edges(data=True) if d["weight"] <= 0.5]
+                avg_weight = self.fc_inst.return_average_weight()
+                elarge = [(u, v) for (u, v, d) in G.edges(data=True) if d["weight"] > avg_weight]
+                esmall = [(u, v) for (u, v, d) in G.edges(data=True) if d["weight"] <= avg_weight]
 
-                pos = nx.spring_layout(G, seed=7)  # positions for all nodes - seed for reproducibility
-                
+                pos = nx.spring_layout(G, seed=1)
+
                 # nodes
                 nx.draw_networkx_nodes(G, pos, node_size=700)
 
@@ -109,10 +122,42 @@ class Friend_Connection_Menu (menu_template):
                 plt.show()
             
             elif choice is 6:
-                pass
+                print(f'There are total of {self.fc_inst.return_total_number_of_friendships()} connections.')
+
+            elif choice is 7:
+                print('Most popular person',end='')
+                popular_list = self.fc_inst.return_highest_friend_count()
+                if len(popular_list) == 0:
+                    print(' does not exist!')
+                elif len(popular_list) == 1:
+                    print(f' in this graph is {popular_list[0]}')
+                else:
+                    print(f's are:')
+                    for num in range(len(popular_list)):
+                        print(f'{num+1}. {popular_list[num]}')
+
+            elif choice is 8:
+                print('Isolated individual',end='')
+                isolated_list = self.fc_inst.return_isolated()
+                if len(isolated_list) == 0:
+                    print('s do not exist!')
+                elif len(isolated_list) == 1:
+                    print(f' in this graph is {isolated_list[0]}')
+                else:
+                    print(f's are:')
+                    for num in range(len(isolated_list)):
+                        print(f'{num+1}. {isolated_list[num]}')
+
+            elif choice is 9:
+                print(f'Average strength of friendship is {self.fc_inst.return_average_weight()}')
+
+            elif choice is 10:
+                self.fc_inst.debug_return_all_info()
+
             else: break
+
             choice = self._print_options_with_choice_prompt()
-            while not self._check_valid(6,choice):
+            while not self._check_valid(max_choice,choice):
                 choice = self._choice_prompt()
         
         return (self.fc_inst.return_friends, self.fc_inst.return_friend_connections)
