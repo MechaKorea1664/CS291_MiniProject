@@ -7,6 +7,7 @@ class Friend_Connection:
     def add_new_person(self, name):
         self.friend_list.append(name)
         self.friend_connection_count_list.append(0)
+        print("added",name)
     
     def print_all_people(self):
         print("Currently, there are...")
@@ -40,7 +41,7 @@ class Friend_Connection:
         return len(self.friend_connection_list)
 
     def return_highest_friend_count(self):
-        if len(self.friend_connection_count_list) == 0: return "does not exist"
+        if len(self.friend_connection_count_list) == 0: return []
         highest_list = []
         biggest = self.friend_connection_count_list[0]
 
