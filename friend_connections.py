@@ -5,9 +5,9 @@ class Friend_Connection:
         self.friend_connection_list = []
 
     def add_new_person(self, name):
+        if (name == ""): return
         self.friend_list.append(name)
         self.friend_connection_count_list.append(0)
-        print("added",name)
     
     def print_all_people(self):
         print("Currently, there are...")

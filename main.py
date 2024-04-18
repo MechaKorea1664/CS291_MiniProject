@@ -16,8 +16,8 @@ fcwidget.add_person(0,0)
 root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
 
-fcwidget.name_list(1,0,2,0,"Currently, there are...")
-fcwidget.name_list(2,0,2,1,"Connected to...")
+nl1 = fcwidget.name_list(1,0,2,"Currently, there are...")
+nl2 = fcwidget.name_list(2,0,2,"Connected to...")
 root.columnconfigure(1, weight=1)
 
 fcwidget.connect_friends(0,1)
@@ -25,9 +25,15 @@ root.rowconfigure(1, weight=1)
 
 #fcwidget.connections_list(2,0,3)
 
-fcwidget.show_misc_info(0,2)
-fcwidget.name_list(1,2,1,2,"Most popular:")
-fcwidget.name_list(2,2,1,3,"In isolation:")
+tfl, awl = fcwidget.show_misc_info(0,2)
+nl3 = fcwidget.name_list(1,2,2,"Most popular:")
+nl4 = fcwidget.name_list(2,2,2,"In isolation:")
 root.rowconfigure(2, weight=1)
 
+fcwidget.import_label_list([nl1,nl2,nl3,nl4,tfl,awl])
+
+fcwidget.graph_generate(0,3)
+
+root.resizable(width=False, height=False)
+root.iconbitmap(default="icon.ico")
 root.mainloop()
